@@ -44,7 +44,7 @@ public class MainActivity extends Activity
         // 여러개의 NDEF 레코드를 모아서 하나의 NDEF 메시지를 생성
         NdefMessage message = new NdefMessage( new NdefRecord[] {
                 createTextRecord("U+Net51D3", Locale.ENGLISH),
-                createTextRecord("4000021671", Locale.ENGLISH),
+                createTextRecord("**********", Locale.ENGLISH),
         });
         return message;
     }
