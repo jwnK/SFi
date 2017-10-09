@@ -31,44 +31,50 @@
 
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_width="165dp"
+        android:layout_height="55dp"
         android:id="@+id/toss"
         android:background="@drawable/nonselected_nfctoss"
-        android:layout_alignTop="@+id/Wifi"
-        android:layout_toEndOf="@+id/textMessage" />
+        android:layout_alignTop="@+id/setting"
+        android:layout_alignStart="@+id/setting" />
         //android:background="#00ff0000"/>
 
     <Button
-        android:layout_width="50dp"
-        android:layout_height="150dp"
+        android:layout_width="55dp"
+        android:layout_height="165dp"
         android:id="@+id/setting"
         android:background="@drawable/nonselected_setting"
         android:layout_alignTop="@+id/Wifi"
-        android:layout_alignParentStart="true" />
-
+        android:layout_alignStart="@+id/Wifi" />
 
     <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/edge"
+        android:background="@drawable/edge"
+        android:layout_alignRight="@+id/Wifi"
+        android:layout_alignBottom="@+id/Wifi" />
+
+    <Button
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:id="@+id/Wifi"
         android:nestedScrollingEnabled="false"
         android:longClickable="false"
         android:clickable="false"
-        android:layout_below="@+id/textMessage"
-        android:background="@drawable/wifi_icon"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="-5dp"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/bot" />
-    //android:background="#00ff0000"/>
+        android:background="@drawable/wifi_icon2"/>
+        //android:background="#00ff000"
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:id="@+id/top"
         android:background="#00ff0000"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/bot" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -78,5 +84,58 @@
         android:layout_below="@+id/toss"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/setting" />
+
+    <Button
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="4dp"
+        android:id="@+id/wifi_icon_off"
+        android:background="#00ff0000"
+        android:layout_width="37dp"
+        android:layout_height="37dp" />
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="700dp"
+        android:layout_marginLeft="330dp"
+        android:background="#00ff0000"
+        android:text=""
+        android:id="@+id/button"/>
+
+
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="100dp"
+        android:id="@+id/tmp_layer"
+        android:layout_marginLeft="10dp"
+        android:background="#fff2f2f2"
+        android:layout_alignTop="@+id/edge"
+        android:layout_alignStart="@+id/wifi_icon_off"
+        android:layout_alignBottom="@+id/bot" />
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="300dp"
+        android:layout_marginLeft="150dp"
+        android:text="ok"
+        android:id="@+id/ok"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/wifi_name"
+        android:hint="Wifi Name" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/wifi_pw"
+        android:hint="password" />
+
 
 </RelativeLayout>

@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,12 +49,15 @@ public class MainActivity extends Activity
     }
 
     // NDEF 메시지 생성 이벤트 함수
+
+    public String wifi_id= "TOMNTOMS_Guest2", wifi_pw = "TOM@1234";
+
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
         // 여러개의 NDEF 레코드를 모아서 하나의 NDEF 메시지를 생성
         NdefMessage message = new NdefMessage(new NdefRecord[]{
-                createTextRecord("TOMNTOMS_Guest2", Locale.ENGLISH),
-                createTextRecord("TOM@1234", Locale.ENGLISH),
+                createTextRecord(wifi_id, Locale.ENGLISH),
+                createTextRecord(wifi_pw, Locale.ENGLISH),
         });
         return message;
     }
@@ -126,12 +130,54 @@ public class MainActivity extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.textMessage);
+        EditText input1 = (EditText) findViewById(R.id.wifi_name);
+        EditText input2 = (EditText) findViewById(R.id.wifi_pw);
+        findViewById(R.id.ok).setVisibility(View.INVISIBLE);
+        findViewById(R.id.tmp_layer).setVisibility(View.INVISIBLE);
+        input1.setVisibility(View.INVISIBLE);
+        input2.setVisibility(View.INVISIBLE);
+
+        findViewById(R.id.button).setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v){
+                EditText input1 = (EditText) findViewById(R.id.wifi_name);
+                EditText input2 = (EditText) findViewById(R.id.wifi_pw);
+                findViewById(R.id.tmp_layer).setVisibility(View.VISIBLE);
+                input1.setVisibility(View.VISIBLE);
+                input2.setVisibility(View.VISIBLE);
+                findViewById(R.id.ok).setVisibility(View.VISIBLE);
+                findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText input1 = (EditText) findViewById(R.id.wifi_name);
+                        EditText input2 = (EditText) findViewById(R.id.wifi_pw);
+                        wifi_id = input1.getText().toString();
+                        wifi_pw = input2.getText().toString();
+                        findViewById(R.id.tmp_layer).setVisibility(View.INVISIBLE);
+                        input1.setVisibility(View.INVISIBLE);
+                        input2.setVisibility(View.INVISIBLE);
+                        findViewById(R.id.ok).setVisibility(View.INVISIBLE);
+                    }
+                });
+
+                return true;
+            }
+        });
         // setting
         findViewById(R.id.bot).setVisibility(View.INVISIBLE);
         findViewById(R.id.top).setVisibility(View.VISIBLE);
+        findViewById(R.id.edge).setVisibility(View.INVISIBLE);
         Button s_top = (Button) findViewById(R.id.top);
         Button s_bot = (Button) findViewById(R.id.bot);
-
+        findViewById(R.id.wifi_icon_off).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intentConfirm = new Intent();
+                intentConfirm.setAction("android.settings.WIFI_SETTINGS");
+                startActivity(intentConfirm);
+                return true;
+            }
+        });
         s_top.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event){
@@ -143,11 +189,17 @@ public class MainActivity extends Activity
                 if (status == false)wifi_state = 0;
                 else wifi_state = 1;
                 RelativeLayout layout = (RelativeLayout)findViewById(R.id.layout);
-                if(wifi_state == 0)layout.setBackgroundResource(R.drawable.wifioff);
-                else layout.setBackgroundResource(R.drawable.wifion);
+                layout.setBackgroundResource(R.drawable.wifioff);
+                if(wifi_state == 1){
+                    findViewById(R.id.Wifi).setVisibility(View.VISIBLE);
+                    findViewById(R.id.wifi_icon_off).setVisibility(View.INVISIBLE);
+                }
+                else{
+                    findViewById(R.id.Wifi).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.wifi_icon_off).setVisibility(View.VISIBLE);
+                }
                 findViewById(R.id.top).setVisibility(View.INVISIBLE);
                 findViewById(R.id.bot).setVisibility(View.VISIBLE);
-                findViewById(R.id.Wifi).setVisibility(View.VISIBLE);
                 return true;
             }
         });
@@ -159,6 +211,7 @@ public class MainActivity extends Activity
                 findViewById(R.id.bot).setVisibility(View.INVISIBLE);
                 findViewById(R.id.top).setVisibility(View.VISIBLE);
                 findViewById(R.id.Wifi).setVisibility(View.INVISIBLE);
+                findViewById(R.id.wifi_icon_off).setVisibility(View.INVISIBLE);
                 return true;
             }
         });
@@ -168,16 +221,30 @@ public class MainActivity extends Activity
         Button toss_b =(Button) findViewById(R.id.toss);
         Button setting_b = (Button) findViewById(R.id.setting);
         toss_b.setVisibility(View.INVISIBLE);
+        findViewById(R.id.wifi_icon_off).setVisibility(View.INVISIBLE);
+        findViewById(R.id.wifi_icon_off).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.INVISIBLE);
+                findViewById(R.id.Wifi).setVisibility(View.VISIBLE);
+                //wifi on
+                ConnectivityManager manager;
+                WifiManager wifiManager=(WifiManager)getSystemService(WIFI_SERVICE);
+                manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                boolean status = wifiManager.isWifiEnabled();
+                wifiManager.setWifiEnabled(true);
+            }
+        });
         setting_b.setVisibility(View.INVISIBLE);
         Button b = (Button) findViewById(R.id.Wifi);
-        //b.setVisibility(View.INVISIBLE);
+        b.setVisibility(View.INVISIBLE);
         b.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 ((Button) findViewById(R.id.toss)).setVisibility(View.VISIBLE);
                 ((Button) findViewById(R.id.setting)).setVisibility(View.VISIBLE);
                 ClipData clip = ClipData.newPlainText("dragtext", "dragtext");
-                v.startDrag(clip, new View.DragShadowBuilder(v), null, 0);
+                v.startDrag(clip, new View.DragShadowBuilder(findViewById(R.id.top)), null, 0);
                 return true;
             }
         });
@@ -187,29 +254,15 @@ public class MainActivity extends Activity
                 ConnectivityManager manager;
                 WifiManager wifiManager=(WifiManager)getSystemService(WIFI_SERVICE);
                 manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
                 boolean status = wifiManager.isWifiEnabled();
-                if (status == false){
-                    // 와이파이가 활성화되지 않았다면
-                    //와이파이 활성화
-                    wifiManager.setWifiEnabled(true);
-                }
-                else wifiManager.setWifiEnabled(false);
-                RelativeLayout layout = (RelativeLayout)findViewById(R.id.layout);
-                if(wifi_state == 0) {
-                    Toast.makeText(getApplicationContext(), "Wifi on", Toast.LENGTH_SHORT).show();
-                    layout.setBackgroundResource(R.drawable.wifion);
-                    wifi_state = 1;
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Wifi off", Toast.LENGTH_SHORT).show();
-                    layout.setBackgroundResource(R.drawable.wifioff);
-                    wifi_state = 0;
-                }
+                wifiManager.setWifiEnabled(false);
+                v.setVisibility(View.INVISIBLE);
+                findViewById(R.id.wifi_icon_off).setVisibility(View.VISIBLE);
             }
         });
         toss_b.setOnDragListener(mDragListener_for_toss);
         setting_b.setOnDragListener(mDragListener_for_setting);
+        b.setOnDragListener(mDragListener_for_dummy);
     }
     View.OnDragListener mDragListener_for_toss = new View.OnDragListener(){
         @Override
@@ -225,9 +278,13 @@ public class MainActivity extends Activity
                         return true;
                     } else return false;
                 case DragEvent.ACTION_DRAG_ENTERED:
+                    findViewById(R.id.edge).setVisibility(View.VISIBLE);
+                    btn.setBackgroundResource(R.drawable.selected_nfctoss);
                     //btn.setText("Enter");
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
+                    findViewById(R.id.edge).setVisibility(View.INVISIBLE);
+                    btn.setBackgroundResource(R.drawable.nonselected_nfctoss);
                     //btn.setText("Exit");
                     return true;
                 case DragEvent.ACTION_DROP:
@@ -235,8 +292,12 @@ public class MainActivity extends Activity
                     NFC_func();
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
+                    findViewById(R.id.toss).setBackgroundResource(R.drawable.nonselected_nfctoss);
+                    findViewById(R.id.setting).setBackgroundResource(R.drawable.nonselected_setting);
                     ((Button) findViewById(R.id.toss)).setVisibility(View.INVISIBLE);
                     ((Button) findViewById(R.id.setting)).setVisibility(View.INVISIBLE);
+                    btn.setBackgroundResource(R.drawable.nonselected_nfctoss);
+                    findViewById(R.id.edge).setVisibility(View.INVISIBLE);
                     return true;
             };
             return true;
@@ -258,8 +319,12 @@ public class MainActivity extends Activity
                     } else return false;
                 case DragEvent.ACTION_DRAG_ENTERED:
                     //btn.setText("Enter");
+                    findViewById(R.id.edge).setVisibility(View.VISIBLE);
+                    btn.setBackgroundResource(R.drawable.selected_setting);
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
+                    findViewById(R.id.edge).setVisibility(View.INVISIBLE);
+                    btn.setBackgroundResource(R.drawable.nonselected_setting);
                     //btn.setText("Exit");
                     return true;
                 case DragEvent.ACTION_DROP:
@@ -271,6 +336,43 @@ public class MainActivity extends Activity
                 case DragEvent.ACTION_DRAG_ENDED:
                     ((Button) findViewById(R.id.toss)).setVisibility(View.INVISIBLE);
                     ((Button) findViewById(R.id.setting)).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.toss).setBackgroundResource(R.drawable.nonselected_nfctoss);
+                    findViewById(R.id.setting).setBackgroundResource(R.drawable.nonselected_setting);
+                    findViewById(R.id.edge).setVisibility(View.INVISIBLE);
+                    return true;
+            };
+            return true;
+        }
+    };
+
+
+    View.OnDragListener mDragListener_for_dummy = new View.OnDragListener(){
+        @Override
+        public boolean onDrag(View v, DragEvent event){
+            Button btn;
+            if(v instanceof Button){
+                btn = (Button) v;
+            }
+            else return false;
+            switch(event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                        return true;
+                    } else return false;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    //btn.setText("Enter");
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    //btn.setText("Exit");
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    ((Button) findViewById(R.id.toss)).setVisibility(View.INVISIBLE);
+                    ((Button) findViewById(R.id.setting)).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.toss).setBackgroundResource(R.drawable.nonselected_nfctoss);
+                    findViewById(R.id.setting).setBackgroundResource(R.drawable.nonselected_setting);
+                    findViewById(R.id.edge).setVisibility(View.INVISIBLE);
                     return true;
             };
             return true;
